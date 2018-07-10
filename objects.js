@@ -2,6 +2,29 @@ function UltraObject(o){
 this.objectified = true;
 this.content = o;
 this.type = typeof o;
+this.dumpConsole = function (padding){
+if(!padding){var padding = ""};
+var k = Object.keys(this.content);
+for(var i = 0;i < k.length;i++){
+if(typeof this.content === "function"){
+console.log(padding + "-" + k[i] + ": Function");
+}else{
+if(typeof this.content === "object"){
+console.log(padding + "-" + k[i] + ": Object(" + Object.keys(this.content[k[i]]).length + ")");
+var u = new UltraObject(this.content[k[i]]);
+u.dumpConsole(padding + "-");
+}else{
+if(Array.isArray(this.content)){
+console.log(padding + "-" + k[i] + ": Array(" + this.content[k[i]].length + ")");
+var u = new UltraObject(this.content[k[i]]);
+u.dumpConsole(padding + "-");
+}else{
+console.log(padding + "-" + k[i] + ": " + this.content[k[i]]);
+};
+};
+};
+};
+};
 if(typeof o === "number"){
 this.toObject = function() {
 var a = new UltraObject();
@@ -16,6 +39,7 @@ this.tan = function() {return Math.tan(this.content);}
 this.abs = function() {return Math.abs(this.content);}
 this.toPowerOf = function(exponent) {return Math.pow(this.content,exponent);}
 this.toText = function() {return String.fromCharCode(this.content);}
+this.divisibleBy = function (n){return this.content / n === Math.round(this.content / n)};
 // Add more number methods here
 };
 if(typeof o === "string"){
@@ -50,7 +74,35 @@ arr.push(this.content.charCodeAt(i));
 }
   return arr;
 }
+this.contains = function (s) {
+return (this.content.indexOf(s) > -1)
+}
+this.reverse = function (){
+var s = "";
+for(var i = this.content.length;i > -1;i--){
+s += this.content.charAt(i);
+};
+return s;
+}
 // Add more string methods here
+};
+if(typeof o === "array"){
+this.contains = function (s) {
+return (this.content.indexOf(s) > -1)
+}
+this.anyContains = function (s) {
+for(var i = 0;i < this.content.length;i++){
+if(this.content[i].indexOf(s) > -1){return true};
+};
+return false;
+}
+this.whichContains = function (s) {
+for(var i = 0;i < this.content.length;i++){
+if(this.content[i].indexOf(s) > -1){return i};
+};
+return -1;
+}
+// Add more array methods here
 };
 // Add more types here
 
